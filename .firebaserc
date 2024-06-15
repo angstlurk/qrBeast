@@ -1,0 +1,19 @@
+{
+  "projects": {
+    "default": "qrbeast-8ecdc"
+  },
+  "targets": {
+    "qrbeast-8ecdc": {
+      "hosting": {
+        "quest": [
+          "qrbeast-8ecdc"
+        ],
+        "tma": [
+          "main-b4c81"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}

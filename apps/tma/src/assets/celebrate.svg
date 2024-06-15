@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" viewBox="0 0 300 300">
+  <circle cx="50" cy="50" r="10" fill="#f9f9f9">
+    <animateTransform attributeName="transform" type="translate" 
+                     from="0 0" to="0 -100" dur="2s" repeatCount="indefinite" />
+  </circle>
+
+  <circle cx="100" cy="100" r="8" fill="#ebeb eb">
+    <animateTransform attributeName="transform" type="translate" 
+                     from="0 0" to="100 -50" dur="2s" repeatCount="indefinite" />
+  </circle>
+
+  <circle cx="150" cy="70" r="12" fill="#cecece">
+    <animateTransform attributeName="transform" type="translate" 
+                     from="0 0" to="50 -120" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+  <circle cx="75" cy="150" r="10" fill="#f0f0f0">
+    <animateTransform attributeName="transform" type="translate" 
+                     from="0 0" to="-50 -80" dur="2.5s" repeatCount="indefinite" />
+  </circle>
+
+  <circle cx="200" cy="50" r="8" fill="#dcdcdc">
+    <animateTransform attributeName="transform" type="translate" 
+                     from="0 0" to="100 -20" dur="3s" repeatCount="indefinite" />
+  </circle>
+
+</svg>
