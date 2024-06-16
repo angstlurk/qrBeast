@@ -1,26 +1,15 @@
 import { beginCell, toNano } from '@ton/core';
-import { SampleJetton } from '../wrappers/Jetton';
+import { sign, signVerify } from '@ton/crypto';
+import { SampleJetton, storeMint, storeSignMint } from '../wrappers/Jetton';
 import { NetworkProvider } from '@ton/blueprint';
 import { buildOnchainMetadata } from '../utils';
-import { KeyPair } from '@ton/crypto';
-import dotenv from 'dotenv';
+import { loadKeysFromEnv, max_supply } from './deployJetton';
 
 const jettonParams = {
     name: 'QR beast Jetton',
     description: 'QR beast Jetton is a token for the QR beast project',
     symbol: 'QRBJ',
     image: '',
-};
-
-export const max_supply = toNano(100322689011);
-
-export const loadKeysFromEnv = (): KeyPair => {
-    dotenv.config();
-
-    const privateKey = Buffer.from(process.env.PRIVATE_KEY ?? '', 'hex');
-    const publicKey = Buffer.from(process.env.PUBLIC_KEY ?? '', 'hex');
-
-    return { secretKey: privateKey, publicKey: publicKey };
 };
 
 export async function run(provider: NetworkProvider) {
@@ -32,18 +21,29 @@ export async function run(provider: NetworkProvider) {
         await SampleJetton.fromInit(sender.address, buildOnchainMetadata(jettonParams), max_supply, publicKey),
     );
 
+    const signature = sign(
+        beginCell()
+            .store(
+                storeMint({
+                    $$type: 'Mint',
+                    amount: toNano(100),
+                    receiver: sender.address,
+                }),
+            )
+            .endCell()
+            .hash(),
+        keypair.secretKey,
+    );
+
     await jetton.send(
         provider.sender(),
         {
-            value: toNano('0.05'),
+            value: toNano('1'),
         },
         {
-            $$type: 'Deploy',
-            queryId: 0n,
+            $$type: 'SignMint',
+            data: { $$type: 'Mint', amount: 100n, receiver: sender.address },
+            signature: beginCell().storeBuffer(signature).endCell(),
         },
     );
-
-    await provider.waitForDeploy(jetton.address);
-
-    // run methods on `jetton`
 }

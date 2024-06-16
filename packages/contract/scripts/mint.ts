@@ -2,8 +2,7 @@ import { beginCell, toNano } from '@ton/core';
 import { SampleJetton } from '../wrappers/Jetton';
 import { NetworkProvider } from '@ton/blueprint';
 import { buildOnchainMetadata } from '../utils';
-import { KeyPair } from '@ton/crypto';
-import dotenv from 'dotenv';
+import { loadKeysFromEnv } from './deployJetton';
 
 const jettonParams = {
     name: 'QR beast Jetton',
@@ -12,38 +11,20 @@ const jettonParams = {
     image: '',
 };
 
-export const max_supply = toNano(100322689011);
-
-export const loadKeysFromEnv = (): KeyPair => {
-    dotenv.config();
-
-    const privateKey = Buffer.from(process.env.PRIVATE_KEY ?? '', 'hex');
-    const publicKey = Buffer.from(process.env.PUBLIC_KEY ?? '', 'hex');
-
-    return { secretKey: privateKey, publicKey: publicKey };
-};
-
 export async function run(provider: NetworkProvider) {
     const keypair = loadKeysFromEnv();
     const sender = provider.sender();
     if (sender.address === undefined) throw new Error('sender address is undefined');
     let publicKey = beginCell().storeBuffer(keypair.publicKey).endCell().beginParse().loadUintBig(256);
     const jetton = provider.open(
-        await SampleJetton.fromInit(sender.address, buildOnchainMetadata(jettonParams), max_supply, publicKey),
+        await SampleJetton.fromInit(sender.address, buildOnchainMetadata(jettonParams), 1_000_000_000n, publicKey),
     );
 
-    await jetton.send(
+    const result = await jetton.send(
         provider.sender(),
         {
             value: toNano('0.05'),
         },
-        {
-            $$type: 'Deploy',
-            queryId: 0n,
-        },
+        { $$type: 'Mint', amount: 1000n, receiver: sender.address },
     );
-
-    await provider.waitForDeploy(jetton.address);
-
-    // run methods on `jetton`
 }
