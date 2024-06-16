@@ -7,7 +7,7 @@ import {
 } from "functions/src/index";
 import { getFunctions } from "firebase/functions";
 import { useEffect, useState } from "react";
-import { useInitData } from "@tma.js/sdk-react";
+import { useInitData, useHapticFeedback } from "@tma.js/sdk-react";
 import { Toast } from "konsta/react";
 import { parseQr } from "@/components/utils";
 import { useQRBeastState } from "@/store/store";
@@ -18,8 +18,10 @@ type Result = {
 };
 
 export const LinkProcessor = () => {
+  const haptic = useHapticFeedback();
   const [toast, setToastState] = useState({ show: false, content: "" });
   const link = useQRBeastState((state) => state.processedLink);
+  const changeLink = useQRBeastState((state) => state.changeLink);
   const setExecuting = useQRBeastState((state) => state.setExecuting);
   const data = useInitData();
 
@@ -29,8 +31,10 @@ export const LinkProcessor = () => {
     }
     const message = result.data.message;
     setToastState({ show: true, content: message });
+    haptic.notificationOccurred("success");
 
     setTimeout(() => {
+      changeLink(null);
       setToastState({ show: false, content: "" });
     }, 5000);
   };
