@@ -1,5 +1,5 @@
 import { app } from "@/store/firebase";
-import { useInitData } from "@tma.js/sdk-react";
+import { useInitData, useViewport } from "@tma.js/sdk-react";
 import { getFunctions } from "firebase/functions";
 import { InitUserRequest } from "functions/src/index";
 import { PropsWithChildren, useEffect } from "react";
@@ -9,6 +9,7 @@ import { useQRBeastState } from "@/store/store";
 
 export const InitUser = ({ children }: PropsWithChildren) => {
   const initData = useInitData();
+  const viewport = useViewport();
   const setLink = useQRBeastState((state) => state.changeLink);
 
   const [executeCallable, executing] = useHttpsCallable<
@@ -17,6 +18,9 @@ export const InitUser = ({ children }: PropsWithChildren) => {
   >(getFunctions(app), "initUser");
 
   useEffect(() => {
+    if (viewport) {
+      !viewport.isExpanded && viewport.expand();
+    }
     if (initData === undefined) {
       return;
     }
@@ -25,7 +29,7 @@ export const InitUser = ({ children }: PropsWithChildren) => {
     executeCallable({
       inviterId: kentId ? kentId.toString() : "",
     });
-  }, [initData, executeCallable]);
+  }, [initData, executeCallable, viewport]);
 
   useEffect(() => {
     if (!initData || !initData.startParam) return;
