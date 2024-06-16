@@ -41,7 +41,7 @@ export const LinkProcessor = () => {
 
   const [processQr, qrExecuting] = useHttpsCallable<ProcessQRRequst, Result>(
     getFunctions(app),
-    "processQr"
+    "processQR"
   );
   const [processTreasure, treasureExecuting] = useHttpsCallable<
     ProcessTreasureRequst,
@@ -76,7 +76,7 @@ export const LinkProcessor = () => {
         }
         default: {
           const result = await processQr({
-            qr: link,
+            qr: parsed.text,
           });
           handleResult(result);
         }
