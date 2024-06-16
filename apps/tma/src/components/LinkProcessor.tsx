@@ -1,5 +1,10 @@
 import { app } from "@/store/firebase.ts";
-import { useHttpsCallable } from "react-firebase-hooks/functions";
+import useHttpsCallable from "@/store/useHttpsCallable.ts";
+import {
+  ProcessQRRequst,
+  ProcessTreasureRequst,
+  ProcessFragmentRequst,
+} from "functions/src/index";
 import { getFunctions } from "firebase/functions";
 import { useEffect, useState } from "react";
 import { useInitData } from "@tma.js/sdk-react";
@@ -30,30 +35,18 @@ export const LinkProcessor = () => {
     }, 5000);
   };
 
-  const [processQr, qrExecuting] = useHttpsCallable<
-    {
-      qr: string;
-      userId: string;
-    },
-    Result
-  >(getFunctions(app), "processQr");
+  const [processQr, qrExecuting] = useHttpsCallable<ProcessQRRequst, Result>(
+    getFunctions(app),
+    "processQr"
+  );
   const [processTreasure, treasureExecuting] = useHttpsCallable<
-    {
-      treasure: string;
-      userId: string;
-    },
+    ProcessTreasureRequst,
     Result
   >(getFunctions(app), "processTreasure");
   const [processFragment, fragmentExecuting] = useHttpsCallable<
-    {
-      fragmentRootId: string;
-      fragmentId: string;
-      userId: string;
-    },
+    ProcessFragmentRequst,
     Result
   >(getFunctions(app), "processFragment");
-
-  const userId = data?.user?.id.toString();
 
   useEffect(() => {
     async function process() {
@@ -65,7 +58,6 @@ export const LinkProcessor = () => {
         case "treasure": {
           const result = await processTreasure({
             treasure: parsed.id,
-            userId: userId ?? "",
           });
           handleResult(result);
           break;
@@ -74,7 +66,6 @@ export const LinkProcessor = () => {
           const result = await processFragment({
             fragmentRootId: parsed.fragmentRootId,
             fragmentId: parsed.fragmentId,
-            userId: userId ?? "",
           });
           handleResult(result);
           break;
@@ -82,14 +73,13 @@ export const LinkProcessor = () => {
         default: {
           const result = await processQr({
             qr: link,
-            userId: userId ?? "",
           });
           handleResult(result);
         }
       }
     }
     process();
-  }, [link, processFragment, processQr, processTreasure, userId]);
+  }, [link, processFragment, processQr, processTreasure]);
 
   const executing = qrExecuting || treasureExecuting || fragmentExecuting;
 

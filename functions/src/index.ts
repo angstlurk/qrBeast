@@ -15,12 +15,20 @@ import {
   createTreasure as createTreasureApi,
 } from "./processTreasure";
 import {processFragment as processFragmentApi} from "./processFragment";
+import {auth} from "./auth";
 
-const mockAuth = (id: string | null) => id;
+export type InitUserRequest = {
+  inviterId: string;
+};
+
+type Auth = {
+  auth: string;
+};
 
 export const initUser = onRequest({cors: true}, async (request, response) => {
-  const userId = mockAuth(request.body.data.userId);
-  const inviterId = request.body.data.inviterId;
+  const data: InitUserRequest & Auth = request.body.data;
+
+  const userId = auth(data.auth);
 
   if (userId === null) {
     response
@@ -28,16 +36,22 @@ export const initUser = onRequest({cors: true}, async (request, response) => {
       .send({data: {success: false, message: "Unauthorized"}});
     return;
   }
-  const result = await initUserApi(userId, inviterId);
+  const result = await initUserApi(userId, data.inviterId);
 
   response.status(200).send({data: {...result}});
 });
 
+export type ProcessQRRequst = {
+  qr: string;
+};
+
 export const processQR = onRequest(
   {cors: true},
   async (request, response) => {
-    const qr = request.body.data.qr;
-    const userId = mockAuth(request.body.data.userId);
+    const data = request.body.data as ProcessQRRequst & Auth;
+    const qr = data.qr;
+
+    const userId = auth(data.auth);
 
     if (userId === null) {
       response.status(401).send("Unauthorized");
@@ -54,11 +68,17 @@ export const processQR = onRequest(
   }
 );
 
+export type ProcessTreasureRequst = {
+  treasure: string;
+};
+
 export const processTreasure = onRequest(
   {cors: true},
   async (request, response) => {
-    const treasure = request.body.data.treasure;
-    const userId = mockAuth(request.body.data.userId);
+    const data = request.body.data as ProcessTreasureRequst & Auth;
+
+    const treasure = data.treasure;
+    const userId = auth(data.auth);
 
     if (userId === null) {
       response.status(401).send("Unauthorized");
@@ -75,13 +95,18 @@ export const processTreasure = onRequest(
   }
 );
 
+export type ProcessFragmentRequst = {
+  fragmentRootId: string;
+  fragmentId: string;
+};
+
 export const processFragment = onRequest(
   {cors: true},
-
   async (request, response) => {
-    const fragmentRootId = request.body.data.fragmentRootId;
-    const fragmentId = request.body.data.fragmentId;
-    const userId = mockAuth(request.body.data.userId);
+    const data = request.body.data as ProcessFragmentRequst & Auth;
+    const fragmentRootId = data.fragmentRootId;
+    const fragmentId = data.fragmentId;
+    const userId = auth(data.auth);
 
     if (userId === null) {
       response.status(401).send("Unauthorized");
@@ -102,12 +127,18 @@ export const processFragment = onRequest(
   }
 );
 
+export type CreateTreasureRequst = {
+  reward: number;
+  remainingCount: number;
+};
+
 export const createTreasure = onRequest(
   {cors: true},
   async (request, response) => {
-    const reward = request.body.data.reward;
-    const remainingCount = request.body.data.remainingCount;
-    const userId = mockAuth(request.body.data.userId);
+    const data = request.body.data as CreateTreasureRequst & Auth;
+    const reward = data.reward;
+    const remainingCount = data.remainingCount;
+    const userId = auth(data.auth);
 
     if (!reward || !remainingCount) {
       response.status(400).send("Bad Request");
