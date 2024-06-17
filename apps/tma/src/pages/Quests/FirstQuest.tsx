@@ -38,6 +38,8 @@ const markFirstRemoved = (debris: Debris[]) => {
   }
   return debris;
 };
+let treasureLink =
+  "https://t.me/qrBeastBot/start?startapp=treasure-05VNWk2psfdEjKRzagv6";
 
 const ImageWithDebris: React.FC = () => {
   const [treasureOpened, setTreasureOpened] = useState(false);
@@ -49,14 +51,9 @@ const ImageWithDebris: React.FC = () => {
   const handleImageClick = () => {
     if (debris.every(({ removed }) => removed)) {
       setTreasureOpened(true);
+      changeLink(treasureLink);
 
-      setTimeout(() => {
-        navigate("/quests");
-      }, 2000);
-
-      changeLink(
-        "https://t.me/qrBeastBot/start?startapp=treasure-05VNWk2psfdEjKRzagv6",
-      );
+      navigate("/");
     }
 
     setDebris((debris) => markFirstRemoved(debris));
@@ -71,7 +68,7 @@ const ImageWithDebris: React.FC = () => {
         <QRCode
           fgColor="#3EB489"
           bgColor="#000000"
-          value="rttps://t.me/qrBeastBot/start?startapp=treasure-05VNWk2psfdEjKRzagv6"
+          value={treasureLink}
         ></QRCode>
         {debris.map((item) => (
           <img

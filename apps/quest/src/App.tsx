@@ -17,6 +17,7 @@ function App() {
       >
         <QRcode value={treasure} />
       </a>
+      <span>Click or scan the qr code to get the reward</span>
     </>
   );
 }
