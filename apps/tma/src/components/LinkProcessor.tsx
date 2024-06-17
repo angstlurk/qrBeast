@@ -8,7 +8,7 @@ import {
 import { getFunctions } from "firebase/functions";
 import { useEffect, useState } from "react";
 import { useInitData, useHapticFeedback } from "@tma.js/sdk-react";
-import { Toast } from "konsta/react";
+import { Toast, Button } from "konsta/react";
 import { parseQr } from "@/components/utils";
 import { useQRBeastState } from "@/store/store";
 
@@ -21,9 +21,24 @@ export const LinkProcessor = () => {
   const haptic = useHapticFeedback();
   const [toast, setToastState] = useState({ show: false, content: "" });
   const link = useQRBeastState((state) => state.processedLink);
-  const changeLink = useQRBeastState((state) => state.changeLink);
+  const linkIsEqualExist = useQRBeastState(
+    (state) => state.processedLinkIsEqualExist
+  );
+  const clearProcessedLinkIsEqual = useQRBeastState(
+    (state) => state.clearProcessedLinkIsEqual
+  );
   const setExecuting = useQRBeastState((state) => state.setExecuting);
   const data = useInitData();
+
+  const clearToast = () => {
+    setTimeout(() => {
+      setToastState({ show: false, content: "" });
+    }, 5000);
+  };
+
+  const clearToastImmediately = () => {
+    setToastState({ show: false, content: "" });
+  };
 
   const handleResult = async (result: { data: Result } | undefined) => {
     if (result === undefined) {
@@ -33,10 +48,7 @@ export const LinkProcessor = () => {
     setToastState({ show: true, content: message });
     haptic.notificationOccurred("success");
 
-    setTimeout(() => {
-      changeLink(null);
-      setToastState({ show: false, content: "" });
-    }, 5000);
+    clearToast();
   };
 
   const [processQr, qrExecuting] = useHttpsCallable<ProcessQRRequst, Result>(
@@ -85,6 +97,14 @@ export const LinkProcessor = () => {
     process();
   }, [link, processFragment, processQr, processTreasure]);
 
+  useEffect(() => {
+    if (linkIsEqualExist) {
+      setToastState({ show: true, content: "QR is already processed" });
+      clearToast();
+      clearProcessedLinkIsEqual();
+    }
+  }, [linkIsEqualExist]);
+
   const executing = qrExecuting || treasureExecuting || fragmentExecuting;
 
   useEffect(() => {
@@ -95,5 +115,16 @@ export const LinkProcessor = () => {
     return <div>Please use in telegram</div>;
   }
 
-  return <Toast opened={toast.show}>{toast.content}</Toast>;
+  return (
+    <Toast
+      opened={toast.show}
+      button={
+        <Button clear small inline onClick={() => clearToastImmediately()}>
+          Close
+        </Button>
+      }
+    >
+      {toast.content}
+    </Toast>
+  );
 };
