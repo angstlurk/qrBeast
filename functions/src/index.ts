@@ -7,15 +7,15 @@
  * See a full list of supported triggers at https://firebase.google.com/docs/functions
  */
 
-import {onRequest} from "firebase-functions/v2/https";
-import {initUser as initUserApi} from "./initUser";
-import {processQR as processQRApi} from "./processQr";
+import { onRequest } from "firebase-functions/v2/https";
+import { initUser as initUserApi, type ResultInit } from "./initUser";
+import { processQR as processQRApi } from "./processQr";
 import {
   processTreasure as processTreasureApi,
   createTreasure as createTreasureApi,
 } from "./processTreasure";
-import {processFragment as processFragmentApi} from "./processFragment";
-import {auth} from "./auth";
+import { processFragment as processFragmentApi } from "./processFragment";
+import { auth } from "./auth";
 
 export type InitUserRequest = {
   inviterId: string;
@@ -25,7 +25,16 @@ type Auth = {
   auth: string;
 };
 
-export const initUser = onRequest({cors: true}, async (request, response) => {
+export type InitUserResponse =
+  | {
+      success: false;
+      message: string;
+    }
+  | ({
+      success: true;
+    } & ResultInit);
+
+export const initUser = onRequest({ cors: true }, async (request, response) => {
   const data: InitUserRequest & Auth = request.body.data;
 
   const userId = auth(data.auth);
@@ -33,12 +42,12 @@ export const initUser = onRequest({cors: true}, async (request, response) => {
   if (userId === null) {
     response
       .status(403)
-      .send({data: {success: false, message: "Unauthorized"}});
+      .send({ data: { success: false, message: "Unauthorized" } });
     return;
   }
   const result = await initUserApi(userId, data.inviterId);
 
-  response.status(200).send({data: {...result}});
+  response.status(200).send({ data: { ...result, success: true } });
 });
 
 export type ProcessQRRequst = {
@@ -46,7 +55,7 @@ export type ProcessQRRequst = {
 };
 
 export const processQR = onRequest(
-  {cors: true},
+  { cors: true },
   async (request, response) => {
     const data = request.body.data as ProcessQRRequst & Auth;
     const qr = data.qr;
@@ -64,7 +73,7 @@ export const processQR = onRequest(
 
     const result = await processQRApi(userId, qr);
 
-    response.status(200).send({data: {...result}});
+    response.status(200).send({ data: { ...result } });
   }
 );
 
@@ -73,7 +82,7 @@ export type ProcessTreasureRequst = {
 };
 
 export const processTreasure = onRequest(
-  {cors: true},
+  { cors: true },
   async (request, response) => {
     const data = request.body.data as ProcessTreasureRequst & Auth;
 
@@ -91,7 +100,7 @@ export const processTreasure = onRequest(
 
     const result = await processTreasureApi(userId, treasure);
 
-    response.status(200).send({data: {...result}});
+    response.status(200).send({ data: { ...result } });
   }
 );
 
@@ -101,7 +110,7 @@ export type ProcessFragmentRequst = {
 };
 
 export const processFragment = onRequest(
-  {cors: true},
+  { cors: true },
   async (request, response) => {
     const data = request.body.data as ProcessFragmentRequst & Auth;
     const fragmentRootId = data.fragmentRootId;
@@ -123,7 +132,7 @@ export const processFragment = onRequest(
       fragmentId,
     });
 
-    response.status(200).send({data: {...result}});
+    response.status(200).send({ data: { ...result } });
   }
 );
 
@@ -133,7 +142,7 @@ export type CreateTreasureRequst = {
 };
 
 export const createTreasure = onRequest(
-  {cors: true},
+  { cors: true },
   async (request, response) => {
     const data = request.body.data as CreateTreasureRequst & Auth;
     const reward = data.reward;
@@ -156,7 +165,7 @@ export const createTreasure = onRequest(
       userId,
     });
 
-    response.status(200).send({data: {...result}});
+    response.status(200).send({ data: { ...result } });
   }
 );
 

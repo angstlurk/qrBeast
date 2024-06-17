@@ -1,7 +1,14 @@
-import {db} from "./db";
-import {User} from "./types";
-import {FieldValue, Timestamp} from "firebase-admin/firestore";
+import { db } from "./db";
+import { User } from "./types";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 
+const rewards = [3, 5, 7, 9, 11, 13, 15];
+
+export type ResultInit = {
+  status: "exists" | "created";
+  message: string;
+  dailyReward: number;
+};
 /**
  * Initialize a user, updating their login rewards and creating a new user if
  * not already existing.
@@ -16,7 +23,7 @@ import {FieldValue, Timestamp} from "firebase-admin/firestore";
 export async function initUser(
   telegramID: string,
   inviter: string | null = null
-): Promise<{ status: string; message: string }> {
+): Promise<{ status: string; message: string; dailyReward: number }> {
   const userRef = db.collection("users").doc(telegramID);
   const userDoc = await userRef.get();
 
@@ -24,9 +31,9 @@ export async function initUser(
     // User reward for every day login
     const userData = userDoc.data() as User;
     const now = new Date();
-    const lastDate = userData.rowLog.lastDate ?
-      userData.rowLog.lastDate.toDate() :
-      null;
+    const lastDate = userData.rowLog.lastDate
+      ? userData.rowLog.lastDate.toDate()
+      : null;
 
     if (lastDate) {
       const diffInMillis = now.getTime() - lastDate.getTime();
@@ -38,18 +45,25 @@ export async function initUser(
           message: `User already logged in today, next time ${Math.round(
             24 - diffInHours
           )} hours`,
+          dailyReward: 0,
         };
       } else if (diffInHours >= 24 && diffInHours < 48) {
+        const dailyReward = rewards[userData.rowLog.count - 1] || 10;
         // Update log, because more than a day has passed, but less than two
         await userRef.update({
           "rowLog.count": FieldValue.increment(1),
           "rowLog.lastDate": Timestamp.now(),
-          "coins": FieldValue.increment(10),
+          coins: FieldValue.increment(dailyReward),
         });
-        return {status: "exists", message: "Rewards updated for daily login"};
+        return {
+          status: "exists",
+          message: "Rewards updated for daily login",
+          dailyReward,
+        };
       } else {
         // Update log and reset count
         await userRef.update({
+          coins: FieldValue.increment(rewards[0]),
           rowLog: {
             count: 1,
             lastDate: Timestamp.now(),
@@ -58,17 +72,23 @@ export async function initUser(
         return {
           status: "exists",
           message: "Streak reset and logged in today",
+          dailyReward: rewards[0],
         };
       }
     } else {
       // If not lastDate, then update log
       await userRef.update({
         rowLog: {
+          coins: FieldValue.increment(rewards[0]),
           count: 1,
           lastDate: Timestamp.now(),
         },
       });
-      return {status: "exists", message: "Rewards updated for daily login"};
+      return {
+        status: "exists",
+        message: "Rewards updated for daily login",
+        dailyReward: rewards[0],
+      };
     }
   } else {
     // Create new user
@@ -110,10 +130,11 @@ export async function initUser(
     await userRef.set(newUser);
 
     return {
+      dailyReward: 0,
       status: "created",
-      message: inviterDoc?.exists ?
-        "User created with inviter" :
-        "User created without inviter",
+      message: inviterDoc?.exists
+        ? "User created with inviter"
+        : "User created without inviter",
     };
   }
 }
