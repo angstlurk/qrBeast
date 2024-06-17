@@ -29,6 +29,11 @@ export const InitUser = ({ children }: PropsWithChildren) => {
       return;
     }
     const kentId = extractKentIdNumber(initData.startParam);
+
+    if (!kentId && initData.startParam) {
+      setLink(initData.startParam);
+    }
+
     async function execute() {
       const result = await executeCallable({
         inviterId: kentId ? kentId.toString() : "",
@@ -45,12 +50,6 @@ export const InitUser = ({ children }: PropsWithChildren) => {
     }
     execute();
   }, [initData, executeCallable, viewport]);
-
-  useEffect(() => {
-    if (!initData || !initData.startParam) return;
-
-    setLink(initData.startParam);
-  }, [initData, setLink]);
 
   if (executing) {
     return null;
