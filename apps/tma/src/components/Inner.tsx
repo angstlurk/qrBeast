@@ -23,6 +23,7 @@ import {
 import { routes } from "@/navigation/routes.tsx";
 import { LinkProcessor } from "./LinkProcessor";
 import { LoadIndicator } from "./LoadIndicator";
+import { RewardStatus } from "./RewardStatus";
 
 const Layout = () => {
   // const location = useLocation();
@@ -34,6 +35,7 @@ const Layout = () => {
         </Suspense>
 
         <LinkProcessor />
+        <RewardStatus />
       </div>
       <Toolbar className="w-full bottom-0 px-4">
         {routes

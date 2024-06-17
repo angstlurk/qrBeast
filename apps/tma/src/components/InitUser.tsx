@@ -1,7 +1,10 @@
 import { app } from "@/store/firebase";
 import { useInitData, useViewport } from "@tma.js/sdk-react";
 import { getFunctions } from "firebase/functions";
-import { InitUserRequest } from "functions/src/index";
+import {
+  type InitUserRequest,
+  type InitUserResponse,
+} from "functions/src/index";
 import { PropsWithChildren, useEffect } from "react";
 import useHttpsCallable from "@/store/useHttpsCallable";
 import { extractKentIdNumber } from "./utils";
@@ -11,10 +14,11 @@ export const InitUser = ({ children }: PropsWithChildren) => {
   const initData = useInitData();
   const viewport = useViewport();
   const setLink = useQRBeastState((state) => state.changeLink);
+  const setReward = useQRBeastState((state) => state.setReward);
 
   const [executeCallable, executing] = useHttpsCallable<
     InitUserRequest,
-    { points: number }
+    InitUserResponse
   >(getFunctions(app), "initUser");
 
   useEffect(() => {
@@ -25,10 +29,21 @@ export const InitUser = ({ children }: PropsWithChildren) => {
       return;
     }
     const kentId = extractKentIdNumber(initData.startParam);
-
-    executeCallable({
-      inviterId: kentId ? kentId.toString() : "",
-    });
+    async function execute() {
+      const result = await executeCallable({
+        inviterId: kentId ? kentId.toString() : "",
+      });
+      if (!result) {
+        return;
+      }
+      if (result.data.success) {
+        if (result.data.status === "reward" || result.data.status === "reset") {
+          setReward({ showReward: true, reward: result.data });
+        }
+      } else {
+      }
+    }
+    execute();
   }, [initData, executeCallable, viewport]);
 
   useEffect(() => {
