@@ -5,7 +5,7 @@ import { FieldValue, Timestamp } from "firebase-admin/firestore";
 const rewards = [3, 5, 7, 9, 11, 13, 15];
 
 export type ResultInit = {
-  status: "exists" | "created";
+  status: "exists" | "created" | "reward" | "reset";
   message: string;
   dailyReward: number;
 };
@@ -56,7 +56,7 @@ export async function initUser(
           coins: FieldValue.increment(dailyReward),
         });
         return {
-          status: "exists",
+          status: "reward",
           message: "Rewards updated for daily login",
           dailyReward,
         };
@@ -70,7 +70,7 @@ export async function initUser(
           },
         });
         return {
-          status: "exists",
+          status: "reset",
           message: "Streak reset and logged in today",
           dailyReward: rewards[0],
         };
@@ -85,7 +85,7 @@ export async function initUser(
         },
       });
       return {
-        status: "exists",
+        status: "reset",
         message: "Rewards updated for daily login",
         dailyReward: rewards[0],
       };
