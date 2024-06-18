@@ -64,6 +64,11 @@ const ImageWithDebris: React.FC = () => {
       className="w-full h-full flex flex-col justify-center items-center"
       onClick={handleImageClick}
     >
+      <span className="mb-10 text-lg">
+        {debris.every(({ removed }) => removed)
+          ? "Click or scan"
+          : "Clearing leaves for reward"}
+      </span>
       <div className="relative">
         <div
           className={`${debris.every(({ removed }) => removed) ? "animate-unblur" : "animate-blur"}`}
@@ -78,7 +83,7 @@ const ImageWithDebris: React.FC = () => {
           <img
             src={leaf}
             key={item.id}
-            className={`absolute w-24 h-24 transition-opacity duration-500 ${
+            className={`absolute w-36 h-36 transition-opacity duration-500 ${
               item.removed ? "opacity-0" : ""
             } `}
             style={{
@@ -89,14 +94,6 @@ const ImageWithDebris: React.FC = () => {
           />
         ))}
       </div>
-
-      <span
-        className={`p-2 text-lg ${
-          debris.every(({ removed }) => removed) ? "" : "opacity-0"
-        }`}
-      >
-        Click or scan
-      </span>
     </div>
   ) : (
     <div>cheest is opened</div>
