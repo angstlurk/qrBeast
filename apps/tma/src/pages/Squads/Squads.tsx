@@ -17,6 +17,7 @@ const Squads = () => {
         Click on the qr code to share the game with friends and get a reward
       </span>
       <QRCode
+        bgColor="#374151"
         onClick={() => {
           utils.shareURL(referalUrl, "Go to the app to get your reward.");
         }}

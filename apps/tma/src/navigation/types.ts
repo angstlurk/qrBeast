@@ -1,9 +1,9 @@
-import { type ComponentType, type JSX } from "react";
+import { type ComponentType } from "react";
 
 export interface Route {
   path: string;
   Component: ComponentType;
   title?: string;
-  icon?: JSX.Element;
+  icon?: string;
   nav?: boolean;
 }

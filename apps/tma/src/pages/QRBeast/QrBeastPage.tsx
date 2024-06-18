@@ -1,5 +1,6 @@
 import { initQRScanner } from "@tma.js/sdk";
-import monster from "./monster.png";
+// import monster from "./monster.png";
+import logo from "@/assets/logo.png";
 import { useInitData } from "@tma.js/sdk-react";
 import { Button } from "konsta/react";
 import { CoinStatus } from "./CoinStatus";
@@ -34,7 +35,7 @@ const QRBeastPage = () => {
           executing ? "animate-shake" : "animate-fly"
         }`}
       >
-        <img className="h-64" src={monster} />
+        <img className="h-64" src={logo} />
       </div>
 
       <div className="p-3 w-full">

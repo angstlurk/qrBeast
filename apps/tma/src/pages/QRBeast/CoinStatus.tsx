@@ -14,10 +14,14 @@ export const CoinStatus = ({ userId }: { userId: string }) => {
   if (loading || !value) {
     return (
       <div className="bg-gray-300 animate-pulse rounded">
-        <div className="text-transparent">points: 100000</div>
+        <span className="text-transparent">100000 coins</span>
       </div>
     );
   }
 
-  return <div>points: {JSON.stringify(value.data()?.coins)}</div>;
+  return (
+    <span className="text-white">
+      {JSON.stringify(value.data()?.coins)} coins
+    </span>
+  );
 };

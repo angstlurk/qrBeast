@@ -8,53 +8,12 @@ import {
   useThemeParams,
   useViewport,
 } from "@tma.js/sdk-react";
-import { App as KonstaApp, Toolbar, Link as UILink } from "konsta/react";
-import { useEffect, useMemo, Suspense } from "react";
+import { App as KonstaApp } from "konsta/react";
+import { useEffect, useMemo } from "react";
 import { isAndroid } from "react-device-detect";
-import {
-  Link,
-  Navigate,
-  Outlet,
-  Route,
-  Router,
-  Routes,
-  // useLocation,
-} from "react-router-dom";
+import { Navigate, Route, Router, Routes } from "react-router-dom";
 import { routes } from "@/navigation/routes.tsx";
-import { LinkProcessor } from "./LinkProcessor";
-import { LoadIndicator } from "./LoadIndicator";
-import { RewardStatus } from "./RewardStatus";
-
-const Layout = () => {
-  // const location = useLocation();
-  return (
-    <div className="h-screen w-screen flex flex-col">
-      <div className="flex-1">
-        <Suspense fallback={<LoadIndicator />}>
-          <Outlet />
-        </Suspense>
-
-        <LinkProcessor />
-        <RewardStatus />
-      </div>
-      <Toolbar className="w-full bottom-0 px-4">
-        {routes
-          .filter(({ nav }) => nav)
-          .map((route) => (
-            <UILink
-              key={route.path}
-              toolbar
-              // tabbarActive={route.path === location.pathname}
-            >
-              <Link key={route.path} to={route.path}>
-                {route.title}
-              </Link>
-            </UILink>
-          ))}
-      </Toolbar>
-    </div>
-  );
-};
+import { Layout } from "./Layout";
 
 const Inner = () => {
   const miniApp = useMiniApp();
