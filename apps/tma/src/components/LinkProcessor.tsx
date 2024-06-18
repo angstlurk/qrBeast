@@ -119,7 +119,13 @@ export const LinkProcessor = () => {
     <Toast
       opened={toast.show}
       button={
-        <Button clear small inline onClick={() => clearToastImmediately()}>
+        <Button
+          className="text-white"
+          clear
+          small
+          inline
+          onClick={() => clearToastImmediately()}
+        >
           Close
         </Button>
       }
