@@ -5,6 +5,7 @@ const TreasureQuest = lazy(() => import("@/pages/Quests/FirstQuest"));
 const AppQuest = lazy(() => import("@/pages/Quests/LongQuest"));
 const LongQuest = lazy(() => import("@/pages/Quests/AppQuest"));
 const VideoQuest = lazy(() => import("@/pages/Quests/VideoQuest"));
+const SurveyQuest = lazy(() => import("@/pages/Quests/SurveyQuest"));
 
 export const questList = [
   {
@@ -22,18 +23,18 @@ export const questList = [
     component: LongQuest,
   },
   {
+    to: "/quests/survey",
+    title: "Complete survey for treasure",
+    text: "Survey quest",
+    media: treasure,
+    component: SurveyQuest,
+  },
+  {
     to: "/quests/otherApp",
     title: "Get treasure from other app",
     text: "Grab treasure from other app",
     media: treasure,
     component: AppQuest,
-  },
-  {
-    to: "/quests/survey",
-    title: "Complete survey for treasure",
-    text: "Survey quest",
-    media: treasure,
-    component: TreasureQuest,
   },
   {
     to: "/quests/youtube",
