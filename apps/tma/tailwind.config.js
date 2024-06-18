@@ -20,10 +20,21 @@ export default konstaConfig({
           "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-10px)" },
           "20%, 40%, 60%, 80%": { transform: "translateX(10px)" },
         },
+
+        blur: {
+          "0%": { filter: "blur(0px)" },
+          "100%": { filter: "blur(8px)" },
+        },
+        unblur: {
+          "0%": { filter: "blur(8px)" },
+          "100%": { filter: "blur(0px)" },
+        },
       },
       animation: {
         fly: "fly 2s infinite",
         shake: "shake 2s infinite",
+        blur: "blur 1s ease-in-out forwards",
+        unblur: "unblur 1s ease-in-out forwards",
       },
     },
   },

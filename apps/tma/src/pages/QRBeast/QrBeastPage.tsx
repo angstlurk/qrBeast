@@ -40,7 +40,7 @@ const QRBeastPage = () => {
 
       <div className="p-3 w-full">
         <Button large onClick={onClick}>
-          Scan QR data
+          Scan QR code
         </Button>
       </div>
     </div>

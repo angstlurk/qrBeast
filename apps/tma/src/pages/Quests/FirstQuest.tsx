@@ -44,7 +44,7 @@ let treasureLink =
 const ImageWithDebris: React.FC = () => {
   const [treasureOpened, setTreasureOpened] = useState(false);
 
-  const [debris, setDebris] = useState<Debris[]>(generateDebris(20));
+  const [debris, setDebris] = useState<Debris[]>(generateDebris(10));
   const changeLink = useQRBeastState((state) => state.changeLink);
   const navigate = useNavigate();
 
@@ -65,11 +65,15 @@ const ImageWithDebris: React.FC = () => {
       onClick={handleImageClick}
     >
       <div className="relative">
-        <QRCode
-          fgColor="#3EB489"
-          bgColor="#000000"
-          value={treasureLink}
-        ></QRCode>
+        <div
+          className={`${debris.every(({ removed }) => removed) ? "animate-unblur" : "animate-blur"}`}
+        >
+          <QRCode
+            fgColor="#3EB489"
+            bgColor="#000000"
+            value={treasureLink}
+          ></QRCode>
+        </div>
         {debris.map((item) => (
           <img
             src={leaf}
@@ -86,13 +90,13 @@ const ImageWithDebris: React.FC = () => {
         ))}
       </div>
 
-      <div
-        className={`${
+      <span
+        className={`p-2 text-lg ${
           debris.every(({ removed }) => removed) ? "" : "opacity-0"
         }`}
       >
         Click or scan
-      </div>
+      </span>
     </div>
   ) : (
     <div>cheest is opened</div>
