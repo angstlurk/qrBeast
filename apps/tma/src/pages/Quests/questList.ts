@@ -4,6 +4,7 @@ import { lazy } from "react";
 const TreasureQuest = lazy(() => import("@/pages/Quests/FirstQuest"));
 const AppQuest = lazy(() => import("@/pages/Quests/LongQuest"));
 const LongQuest = lazy(() => import("@/pages/Quests/AppQuest"));
+const VideoQuest = lazy(() => import("@/pages/Quests/VideoQuest"));
 
 export const questList = [
   {
@@ -39,6 +40,6 @@ export const questList = [
     title: "Find all fragments from video",
     text: "Video quest",
     media: treasure,
-    component: TreasureQuest,
+    component: VideoQuest,
   },
 ];
