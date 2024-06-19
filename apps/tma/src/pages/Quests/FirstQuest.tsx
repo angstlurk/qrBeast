@@ -44,12 +44,23 @@ let treasureLink =
 const ImageWithDebris: React.FC = () => {
   const [treasureOpened, setTreasureOpened] = useState(false);
 
+  const [interactionIsWork, setInteractionIsWork] = useState(false);
   const [debris, setDebris] = useState<Debris[]>(generateDebris(10));
   const changeLink = useQRBeastState((state) => state.changeLink);
   const navigate = useNavigate();
 
   const handleImageClick = () => {
     if (debris.every(({ removed }) => removed)) {
+      if (!interactionIsWork) {
+        setTimeout(() => {
+          setInteractionIsWork(true);
+        }, 700);
+      }
+
+      if (!interactionIsWork) {
+        return;
+      }
+
       setTreasureOpened(true);
       changeLink(treasureLink);
 
@@ -73,11 +84,7 @@ const ImageWithDebris: React.FC = () => {
         <div
           className={`${debris.every(({ removed }) => removed) ? "animate-unblur" : "animate-blur"}`}
         >
-          <QRCode
-            fgColor="#3EB489"
-            bgColor="#000000"
-            value={treasureLink}
-          ></QRCode>
+          <QRCode fgColor="#3EB489" bgColor="#000000" value={treasureLink} />
         </div>
         {debris.map((item) => (
           <img
