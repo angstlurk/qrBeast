@@ -37,7 +37,7 @@ export const Layout = () => {
             route.icon ? (
               <UILink navbar iconOnly className="text-white mb-2">
                 <Link key={route.path} to={route.path}>
-                  <img className="w-10 h-16" src={route.icon} />
+                  <img className="w-10 h-8" src={route.icon} />
                 </Link>
               </UILink>
             ) : (
