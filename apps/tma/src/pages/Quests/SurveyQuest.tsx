@@ -63,7 +63,7 @@ const Quiz: React.FC = () => {
 
   if (showResult) {
     return (
-      <div className="p-4 max-w-md mx-auto rounded-xl shadow-md space-y-4">
+      <div className="p-4 max-w-md mx-auto rounded-xl space-y-4">
         {hasErrors ? (
           <>
             <h1 className="text-2xl font-bold">Incorrect Answer</h1>
@@ -76,7 +76,7 @@ const Quiz: React.FC = () => {
             </button>
           </>
         ) : (
-          <>
+          <div className="flex flex-col items-center">
             <QRcode
               onClick={() => {
                 changeLink(treasureLink);
@@ -87,11 +87,11 @@ const Quiz: React.FC = () => {
               value={treasureLink}
             />
             <h1 className="text-2xl font-bold">Congratulations!</h1>
-            <p>
+            <p className="text-center">
               You answered correctly on {score} out of {quizQuestions.length}{" "}
               questions.
             </p>
-          </>
+          </div>
         )}
       </div>
     );
