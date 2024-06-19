@@ -18,7 +18,7 @@ export const Layout = () => {
 
   return (
     <div className="h-screen w-screen flex flex-col bg-gray-600">
-      <div className="flex-1">
+      <div className="flex-grow overflow-y-auto">
         <Suspense fallback={<LoadIndicator />}>
           <Outlet />
         </Suspense>
