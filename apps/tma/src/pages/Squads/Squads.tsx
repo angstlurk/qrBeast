@@ -17,7 +17,7 @@ const Squads = () => {
         Invite your friends with this this qr link or share app by button
       </span>
       <a>
-        <QRCode bgColor="#374151" value={referalUrl} />
+        <QRCode bgColor="#4b5563" value={referalUrl} />
       </a>
 
       <a

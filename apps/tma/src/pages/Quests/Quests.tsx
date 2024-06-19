@@ -7,7 +7,7 @@ const Quests = () => {
     <List
       strongIos
       outlineIos
-      className="bg-gray-700"
+      className="bg-gray-600"
       colors={{
         outlineMaterial: "",
         outlineIos: "",

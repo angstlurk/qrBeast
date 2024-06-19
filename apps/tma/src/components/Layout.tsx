@@ -17,7 +17,7 @@ export const Layout = () => {
   miniApp.setHeaderColor("#0f172a");
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-700">
+    <div className="h-screen w-screen flex flex-col bg-gray-600">
       <div className="flex-1">
         <Suspense fallback={<LoadIndicator />}>
           <Outlet />
